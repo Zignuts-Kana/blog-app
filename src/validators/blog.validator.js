@@ -1,11 +1,11 @@
-import { body } from "express-validator";
+import { check } from "express-validator";
 
 const createBlogValidator = [
-  body["title"].notEmpty(),
-  body["slug"].notEmpty(),
-  body["category"].notEmpty(),
-  body["description"].notEmpty(),
-  body["imageThumbnail"].notEmpty(),
+  check("title").notEmpty(),
+  check("slug").notEmpty(),
+  check("category").notEmpty(),
+  check("description").notEmpty(),
+  check("imageThumbnail").notEmpty(),
 ];
 
 export { createBlogValidator };

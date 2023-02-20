@@ -16,19 +16,36 @@ const createBlogController = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, description, slug, date, category, imageThumbnail, image } =
-      req.body;
 
-    const stringDate = moment(new Date(date)).format("DD-MMM-YYYY");
-
+    const { title, description, slug, date, category,imageThumbnail, images } = req.body;
+    
+    console.log(
+      title,
+      description,
+      title.toLowerCase().split(" ").join("-"),
+      date,
+      category,
+      imageThumbnail,
+      images
+    );
+    const stringDate = moment(Date(date)).format("DD-MMM-YYYY");
+    console.log(
+      title,
+      description,
+      title.toLowerCase().split(" ").join("-"),
+      date,
+      category,
+      imageThumbnail,
+      images
+    );
     const blog = await createNewBlogHelper({
       title,
       description,
-      slug,
+      slug: title.toLowerCase().split(" ").join("-"),
       date: stringDate,
       category,
       imageThumbnail,
-      image,
+      images,
     });
 
     return res
@@ -58,6 +75,17 @@ const findAllBlogsOfOneUserController = async (req, res) => {
   }
 };
 
+const findAllSerchedBlogsController = async (req, res) => {
+  try {
+    return await findBlogByFieldHelper({
+      owner: req.user._id,
+      title: { $regex: req.body.serch, $options: "i" },
+    });
+  } catch (error) {
+    return res.status(500).send({ Error: error });
+  }
+};
+
 const deleteBlogController = async (req, res) => {
   try {
     //delete by id and id in id of button
@@ -71,19 +99,24 @@ const deleteBlogController = async (req, res) => {
 
 const updateBlogController = async (req, res) => {
   try {
-    const { title, description, slug, date, category, imageThumbnail, image } =
+    const slug = req.params.slug;
+    const { title, description, date, category, imageThumbnail, images } =
       req.body;
 
-    const stringDate = moment(new Date(date)).format("DD-MMM-YYYY");
+    const stringDate = moment(Date(date)).format("DD-MMM-YYYY");
 
-    const blog = await createNewBlogHelper({
-      title,
-      description,
-      slug,
-      date: stringDate,
-      category,
-      imageThumbnail,
-      image,
+    const blog = await updateBlogByIdHelper({
+      query: { slug },
+      updateBody: {
+        title,
+        description,
+        slug,
+        date: stringDate,
+        category,
+        imageThumbnail,
+        images,
+      },
+      options: { new: true, upsert: true },
     });
 
     return res.status(201).send({ Message: "Update Blog Successfully!", blog });
@@ -96,6 +129,7 @@ export {
   createBlogController,
   findAllBlogController,
   findAllBlogsOfOneUserController,
+  findAllSerchedBlogsController,
   deleteBlogController,
   updateBlogController,
 };

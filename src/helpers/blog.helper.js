@@ -2,10 +2,14 @@ import { BlogData } from "../models/blog.model.js";
 
 const createNewBlogHelper = async (data) => {
   try {
-    return await BlogData.findOneAndUpdate({ title: data.title }, data, {
-      upsert: true,
-      new: true,
-    });
+    return await BlogData.findOneAndUpdate(
+      { title: data.title, slug: data.slug },
+      data,
+      {
+        upsert: true,
+        new: true,
+      }
+    );
   } catch (error) {
     console.log("Error in User Helper in CreateNewBlogHelper", error);
   }
@@ -13,7 +17,7 @@ const createNewBlogHelper = async (data) => {
 
 const findAllBlogHelper = async () => {
   try {
-    return await BlogData.find();
+    return await BlogData.find().sort({ createdAt: -1 });
   } catch (error) {
     console.log("Error in User Helper in findAllBlogHelper", error);
   }
@@ -36,12 +40,12 @@ const findOneBlogByFieldHelper = async (query) => {
 };
 
 const findBlogByFieldHelper = async (query) => {
-    try {
-      return await BlogData.find(query);
-    } catch (error) {
-      console.log("Error in User Helper in findBlogByFieldHelper", error);
-    }
-  };
+  try {
+    return await BlogData.find(query).sort({ createdAt: -1 });
+  } catch (error) {
+    console.log("Error in User Helper in findBlogByFieldHelper", error);
+  }
+};
 
 const updateBlogByIdHelper = async ({ query, updateBody, options }) => {
   try {
@@ -66,5 +70,5 @@ export {
   findOneBlogByFieldHelper,
   updateBlogByIdHelper,
   deleteBlogByIdHelper,
-  findBlogByFieldHelper
+  findBlogByFieldHelper,
 };

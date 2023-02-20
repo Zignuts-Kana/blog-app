@@ -1,10 +1,12 @@
 import express from "express";
 import { userRouter } from "./user.router.js";
+import { blogRouter } from "./blog.router.js";
+import { categoryRouter } from "./category.router.js";
 
 const Router = express.Router();
 
 Router.get("/", (req, res) => {
-  return res.render('pages/dashboard.ejs');
+  return res.render('pages/profile.ejs');
 });
 
 Router.get('/blogs',(req,res) => {
@@ -44,5 +46,9 @@ Router.get("/profile", (req, res) => {
 });
 
 Router.use('/user',userRouter);
+
+Router.use('/blog',blogRouter);
+
+Router.use('/category',categoryRouter);
 
 export { Router };

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import slug from "mongoose-slug-generator";
 
-const { ObjectId, Number, String } = mongoose.Schema.Types;
+const { Mixed,ObjectId, Number, String } = mongoose.Schema.Types;
 
 mongoose.plugin(slug);
 
@@ -38,10 +38,10 @@ const BlogDataSchema = mongoose.Schema(
       require: true,
     },
     imageThumbnail: {
-      type: Buffer,
+      type: Mixed,
       require: true,
     },
-    images: [{ type: Buffer }],
+    images: [{ type: Mixed }],
   },
   {
     timestamps: true,

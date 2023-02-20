@@ -1,53 +1,53 @@
+import express from "express";
+import fs from "fs";
+import {
+  createBlogController,
+  findAllBlogController,
+  findAllBlogsOfOneUserController,
+  deleteBlogController,
+  updateBlogController,
+} from "../controllers/blog.controller.js";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from 'url';
+import { createBlogValidator } from "../validators/blog.validator.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const blogRouter = express.Router();
 
 const storage = multer.diskStorage({
-    destination:(req,file,cb)=>{
-      cb(null,'../uploads/');
-    },
-    filename:(req,file,cb)=>{
-      cb(null,new Date().toDateString()+file.originalname);
-    }
-  })
-  
-  // const upload = multer({dest:'uploads/'});
-  
-  const fileFilter = (req,file,cb)=>{
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' ) {
-      cb(null,true);
-    } else {
-      cb("Invalid File Format!",false);
-    }
+  destination: (req, file, cb) => {
+    fs.mkdir('./public/uploads/',(err)=>{
+      cb(null, './public/uploads/');
+   });
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/jpg") {
+    cb(null, true);
+  } else {
+    cb("Invalid File Format!", false);
   }
-  
-  const upload = multer({
-    storage,
-    fileFilter
-  })
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+});
 
 
-//   const express = require('express')
-// const multer  = require('multer')
-// const upload = multer({ dest: 'uploads/' })
+blogRouter.post(
+  "/",
+  upload.fields([{name:"imageThumbnail",maxCount:1},{name:"images",maxCount:5}]),
+  createBlogController
+);
 
-// const app = express()
+// blogRouter.get('/',)
 
-// app.post('/profile', upload.single('avatar'), function (req, res, next) {
-//   // req.file is the `avatar` file
-//   // req.body will hold the text fields, if there were any
-// })
-
-// app.post('/photos/upload', upload.array('photos', 12), function (req, res, next) {
-//   // req.files is array of `photos` files
-//   // req.body will contain the text fields, if there were any
-// })
-
-// const cpUpload = upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }])
-// app.post('/cool-profile', cpUpload, function (req, res, next) {
-//   // req.files is an object (String -> Array) where fieldname is the key, and the value is array of files
-//   //
-//   // e.g.
-//   //  req.files['avatar'][0] -> File
-//   //  req.files['gallery'] -> Array
-//   //
-//   // req.body will contain the text fields, if there were any
-// })
+export { blogRouter };

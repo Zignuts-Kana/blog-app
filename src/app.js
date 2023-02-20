@@ -24,13 +24,15 @@ app.use(expressLayouts);
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '../public')));
+console.log(path.join(__dirname, '../uploads'));
+app.use('/uploads', express.static('../uploads'));
 
 //Set Morgan
 app.use(morgan('combined'));
 
 //Define BodyParser Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Define CORS
 

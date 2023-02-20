@@ -10,6 +10,10 @@ const BlogCategorySchema = mongoose.Schema(
       unique: true,
       trim: true,
     },
+    date: {
+      type: String,
+      require:true
+    },
     owner: {
       type: ObjectId,
       require: true,
@@ -21,6 +25,6 @@ const BlogCategorySchema = mongoose.Schema(
   }
 );
 
-const BlogUser = mongoose.model("blog-category", BlogCategorySchema);
+const BlogCategory = mongoose.model("blog-category", BlogCategorySchema);
 
-export { BlogUser };
+export { BlogCategory };
