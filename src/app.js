@@ -31,7 +31,7 @@ app.use('/uploads', express.static('../uploads'));
 app.use(morgan('combined'));
 
 //Define BodyParser Middleware
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Define CORS

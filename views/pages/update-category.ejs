@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="card-body">
-              <form action="/update-profile-info" method="POST">
+              <form action='/category/edit/<%= category.name %>' method="POST">
                 <h6 class="heading-small text-muted mb-4">Category Information</h6>
                 <div class="pl-lg-4">
                   <% if (locals.messages && messages.success) { %>
@@ -47,17 +47,17 @@
                     <div class="col-lg-12">
                       <div class="form-group">
                         <label class="form-control-label" for="input-name">Name</label>
-                        <input type="text" id="input-name" class="form-control form-control-alternative" name="name" placeholder="Category Name" value="<%= locals.userInfo && locals.userInfo.name %>">
+                        <input type="text" id="input-name" class="form-control form-control-alternative" name="name" placeholder="Category Name" value='<%= category.name %>'>
                         <% if (locals.messages && messages.errors && messages.errors.name) { %>
                           <strong class="invalid-feedback" style="display: block"><%= messages.errors.name %></strong>
                         <% } %>
                       </div>
                     </div>
                     <div class="col-lg-6 text-center">
-                      <button class="btn btn-success mt-4 mb-4">Save</button>
+                      <button class="btn btn-success mt-4 mb-4">Update</button>
                     </div>
                     <div class="col-lg-6 text-center">
-                      <a href="/" class="btn btn-danger mt-4 mb-4">Cancel</a>
+                      <a href="/categories" class="btn btn-danger mt-4 mb-4">Cancel</a>
                     </div>
                   </div>
                 </div>
@@ -82,12 +82,8 @@
       const name = document.getElementById('input-name').value;
 
       const userAction = async () => {
-        const response = await fetch(`http://localhost:3000/category`, {
-          method: "POST",
-          body: JSON.stringify({name}),
-          headers: {
-            "Content-Type": "application/json",
-          },
+        const response = await fetch(`http://localhost:3000/delete/<%= category._id %>`, {
+          method: "DELETE",
         });
 
         if (response.status === 200) {

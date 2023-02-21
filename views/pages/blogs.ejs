@@ -27,22 +27,29 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(let i = 0;i< results.length;i++){ %>
+                  <% for(let i = 0;i< blogs.length;i++){ %>
                   <tr>
                     <th scope="row">
-                      <%= results.name %>
+                      <div class="media align-items-center">
+                        <a href="#" class="avatar rounded-circle mr-3">
+                          <img alt="Blog Image" src="uploads/<%= blogs[i].imageThumbnail[0].filename %>">
+                        </a>
+                        <div class="media-body">
+                          <span class="mb-0 text-sm"><%= blogs[i].title %></span>
+                        </div>
+                      </div>
                     </th>
-                    <td><%= results.category %></td>
+                    <td><%= blogs[i].category %></td>
                     <td>
-                      <%= result.description.slice(0,25) %>...
+                      <%- blogs[i].description %>...
                     </td>
                     <td>
                       <ul class="list-inline m-0">
                         <li class="list-inline-item">
-                          <button class="btn btn-success btn-sm rounded-0" type="button" title="Edit" name=`edit-<%= results[i].slug %>` onclick="editClicked(this.name)"><i class="fa fa-edit"></i></button>  
+                          <button class="btn btn-success btn-sm rounded-0" type="button" title="Edit" name=edit/<%= blogs[i].slug %> onclick="editClicked(this.name)"><i class="fa fa-edit"></i></button>  
                         </li>
                         <li class="list-inline-item">
-                          <button class="btn btn-danger btn-sm rounded-0" type="button" title="Delete" name=`delete<%= results[i]._id%>` onclick="deleteClicked(this.name)"><i class="fa fa-trash"></i></button>
+                          <button class="btn btn-danger btn-sm rounded-0" type="button" title="Delete" name=delete/<%= blogs[i]._id%> onclick="deleteClicked(this.name)"><i class="fa fa-trash"></i></button>
                         </li>
                       </ul>
                     </td>
@@ -91,23 +98,23 @@
   <script>
     const editClicked = (editName) => {
         
-        let editIndex = editName.split('-');
-        editIndex = parseInt(editIndex[1]);
+        let slug = editName.split('/');
+        slug = slug[1];
         
-        window.location.href = `http://localhost:3000/blog/edit/${slug}`;   
+        window.location.href = `http://localhost:3000/${slug}`;   
       }
 
       const deleteClicked = (deleteName) => {
 
-        let isExecuted = confirm(`Are you sure to delete this course?`);
+        let isExecuted = confirm(`Are you sure to delete this blog?`);
 
-        let deleteIndex = deleteName.split('-');
-        deleteIndex = parseInt(deleteIndex[1]);
+        let blogId = deleteName.split('/');
+        blogId =blogId[1];
         // console.log(deleteIndex);
         // const myBody = {};
 
         const userAction = async () => {
-        await fetch(`http://localhost:3000/blog/delete/${deleteIndex}`, {
+        await fetch(`http://localhost:3000/blogs/${blogId}`, {
           method: 'DELETE',
           // body: JSON.stringify(myBody),
           headers: {
@@ -115,11 +122,10 @@
           }
         });
 
-        setTimeout(() => {
           //false wrong when delete row and page is empty!
-          window.location.href = `http://localhost:3000/blog`
+          window.location.href = `http://localhost:3000/blogs`
           // location.reload();
-          }, 1500);
+
         }
 
         if (isExecuted === true) {

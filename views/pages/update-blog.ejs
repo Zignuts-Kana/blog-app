@@ -15,7 +15,7 @@
             <div class="card-header bg-white border-0">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h3 class="mb-0">Update Blog</h3>
+                  <h3 class="mb-0">Post New Blog</h3>
                 </div>
                 <div class="col-4 text-right">
                   <a href="/" class="btn btn-sm btn-primary">Back</a>
@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="card-body">
-              <form id="blogForm">
+              <form action='blogs/edit/<%= blog.slug %>' method="post" id="blogForm" enctype="multipart/form-data">
                 <h6 class="heading-small text-muted mb-4">Blog information</h6>
                 <div class="pl-lg-4">
                   <% if (locals.messages && messages.success) { %>
@@ -70,7 +70,8 @@
                           class="form-control form-control-alternative"
                           name="title"
                           placeholder="Title"
-                          value="<%= locals.userInfo && locals.userInfo.name %>"
+                          value="<%= blog.title %>"
+                          required
                         />
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -91,7 +92,8 @@
                           class="form-control form-control-alternative"
                           name="slug"
                           placeholder="s-l-u-g"
-                          value=""
+                          value="<%- blog.slug %>"
+                          readonly
                         />
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -109,14 +111,13 @@
                           >Description</label
                         >
                         <textarea
-                          type="text"
-                          id="input-description"
+                          name="editor1"
+                          id="CK1"
                           class="form-control form-control-alternative"
                           rows="2"
-                          name="description"
                           placeholder="Write about blog..."
-                          value="<%= locals.userInfo && locals.userInfo.email %>"
-                        ></textarea>
+                          value=<%- blog.description %>
+                        </textarea>
                         <% if (locals.messages && messages.errors &&
                         messages.errors.username) { %>
                         <strong class="invalid-feedback" style="display: block"
@@ -135,7 +136,8 @@
                           id="input-date"
                           class="form-control form-control-alternative"
                           name="date"
-                          value="<%= locals.userInfo && locals.userInfo.name %>"
+                          value="<%- blog.createdAt %>"
+                          required
                         />
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -156,18 +158,12 @@
                           id="input-category"
                           name="category"
                         >
-                          <option selected>Choose one</option>
-                          <option value="Health and fitness">
-                            Health and fitness
-                          </option>
-                          <option value="Lifestyle">Lifestyle</option>
-                          <option value="Travely">Travel</option>
-                          <option value="Parenting">Parenting</option>
-                          <option value="Business">Business</option>
-                          <option value="Personal finance">
-                            Personal finance
-                          </option>
-                          <option value="Sports">Sports</option>
+                          <option selected><%- blog.category %></option>
+                          <% for(let i=0;i<categoryList.length;i++) {%>
+                            <option value=<%= categoryList[i].name %>>
+                              <%= categoryList[i].name %>
+                            </option>
+                          <% } %>
                         </select>
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -187,6 +183,7 @@
                           class="form-control form-control-alternative form-control"
                           id="input-thumbnail"
                           name="imageThumbnail"
+                          required
                         />
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -218,11 +215,11 @@
                     </div>
                     <div class="col-lg-6 text-center">
                       <button type="submit" class="btn btn-success mt-4 mb-4">
-                        Save
+                        Update
                       </button>
                     </div>
                     <div class="col-lg-6 text-center">
-                      <a href="/" class="btn btn-danger mt-4 mb-4">Cancel</a>
+                      <a href="/blogs" class="btn btn-danger mt-4 mb-4">Cancel</a>
                     </div>
                   </div>
                 </div>
@@ -240,50 +237,54 @@
   <% include ../partials/scripts %>
   <script>
     console.log("here");
-    const title = document.querySelector('#input-title');
+    const title = document.querySelector("#input-title");
     const slug = document.getElementById("input-slug");
 
-    title.addEventListener('change',(e)=>{
-      slug.value = (title.value).trim().toLowerCase().replaceAll(' ','-');
-    })
-
-    const blogForm = document.getElementById("blogForm");
-    blogForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const title = document.getElementById("input-title").value;
-      const slug = document.getElementById("input-slug").value;
-      const description = document.getElementById("input-description").value;
-      const date = document.getElementById("input-date").value;
-      const category = document.getElementById("input-category").value;
-      const thumbnail = document.getElementById("input-thumbnail").files;
-      const images = document.getElementById("input-images").files;
-
-      const muBody = {
-        title,
-        slug : title.toLowerCase().replaceAll(' ','-'),
-        description,
-        date,
-        category,
-        thumbnail,
-        images,
-      };
-
-      const userAction = async () => {
-        const response = await fetch(`http://localhost:3000/blog`, {
-          method: "POST",
-          body: JSON.stringify(myBody),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 200) {
-          window.location.href = `http://localhost:3000/`;
-        } else {
-          window.location.href = `http://localhost:3000/blog/`;
-        }
-      };
+    title.addEventListener("keydown", (e) => {
+      slug.value = title.value.trim().toLowerCase().split(" ").join("-");
     });
+
+    title.addEventListener("change", (e) => {
+      slug.value = title.value.trim().toLowerCase().split(" ").join("-");
+    });
+
+    // const blogForm = document.getElementById("blogForm");
+    // blogForm.addEventListener("submit", (e) => {
+    //   e.preventDefault();
+
+    //   const title = document.getElementById("input-title").value;
+    //   const slug = document.getElementById("input-slug").value;
+    //   const description = document.getElementById("CK1").value;
+    //   const date = document.getElementById("input-date").value;
+    //   const category = document.getElementById("input-category").value;
+    //   console.log("description", description);
+    //   const myBody = {
+    //     title,
+    //     slug: title.toLowerCase().split(" ").join("-"),
+    //     description,
+    //     date,
+    //     category,
+    //     imageThumbnail,
+    //     images,
+    //   };
+
+    //   const userAction = async () => {
+    //     const response = await fetch(`http://localhost:3000/blog`, {
+    //       method: "POST",
+    //       body: JSON.stringify(myBody),
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     });
+
+    //     if (response.status === 200) {
+    //       window.location.href = `http://localhost:3000/`;
+    //     } else {
+    //       window.location.href = `http://localhost:3000/blog`;
+    //     }
+    //   };
+
+    //   userAction();
+    // });
   </script>
 </body>

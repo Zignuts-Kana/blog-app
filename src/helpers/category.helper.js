@@ -13,11 +13,19 @@ const createNewCategoryHelper = async (data) => {
 
 const findAllCategoryHelper = async () => {
   try {
-    return await BlogCategory.find().sort({createdAt:-1});
+    return await BlogCategory.find().sort({createdAt:-1}).select('name -_id');
   } catch (error) {
     console.log("Error in User Helper in findAllCategoryHelper", error);
   }
 };
+
+const findAllCategoryAllFieldHelper = async () =>{
+  try {
+    return await BlogCategory.find().sort({createdAt:-1});
+  } catch (error) {
+    console.log("Error in User Helper in findAllCategoryHelper", error);
+  }
+}
 
 const findCategoryByIdHelper = async (_id) => {
   try {
@@ -67,4 +75,5 @@ export {
   deleteCategoryByIdHelper,
   findCategoryByFieldHelper,
   findOneCategoryByFieldHelper,
+  findAllCategoryAllFieldHelper,
 };

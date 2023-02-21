@@ -11,4 +11,8 @@ const categoryRouter = express.Router();
 
 categoryRouter.post("/", createCategoryController);
 
+categoryRouter.delete('/delete/:deletId',deleteCategoryController);
+
+categoryRouter.post('/edit/:name',updateCategoryController);
+
 export { categoryRouter };

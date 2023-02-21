@@ -6,6 +6,7 @@ import {
   findAllBlogsOfOneUserController,
   deleteBlogController,
   updateBlogController,
+  findBlogBySlug
 } from "../controllers/blog.controller.js";
 import multer from "multer";
 import path from "path";
@@ -41,12 +42,30 @@ const upload = multer({
   fileFilter,
 });
 
+// upload.single('imageThumbnail'),
+// upload.array('images'),
 
 blogRouter.post(
   "/",
   upload.fields([{name:"imageThumbnail",maxCount:1},{name:"images",maxCount:5}]),
   createBlogController
 );
+
+blogRouter.get('/:slug',findBlogBySlug);
+
+blogRouter.delete('/delete/:blogId',deleteBlogController);
+
+blogRouter.post('/edit/:slug',updateBlogController);
+
+// blogRouter.post(
+//   '/thumbnail',upload.single('imageThumbnail'),
+//   storeThumbnail
+// )
+
+// blogRouter.post(
+//   '/images',upload.array('images'),
+//   storeImages
+// )
 
 // blogRouter.get('/',)
 

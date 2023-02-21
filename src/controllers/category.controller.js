@@ -8,6 +8,7 @@ import {
   findOneCategoryByFieldHelper,
 } from "../helpers/category.helper.js";
 import { validationResult } from "express-validator";
+import { Schema } from "mongoose";
 import moment from "moment-timezone";
 
 const createCategoryController = async (req, res) => {
@@ -20,13 +21,13 @@ const createCategoryController = async (req, res) => {
     
     const date = moment(Date.now()).tz("Asia/Calcutta|Asia/Kolkata").format("DD-MMM-YYYY");
 
-    const blog = await createNewCategoryHelper({
+    const category = await createNewCategoryHelper({
       name,date
     });
 
     return res
       .status(201)
-      .send({ Message: "New Category Added Successfully!", blog });
+      .redirect('/categories')
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
@@ -54,8 +55,9 @@ const findAllCategoryOfOneUserController = async (req, res) => {
 const deleteCategoryController = async (req, res) => {
   try {
     //delete by id and id in id of button
-    const { blogId } = req.params;
-    const blog = await deleteCategoryByIdHelper(blogId);
+    let { deletId } = req.params;
+    deletId = new Schema.ObjectId(deletId);
+    const blog = await deleteCategoryByIdHelper(deletId.path);
     return res.status(200).send({ Message: "Delete Category Success!" });
   } catch (error) {
     return res.status(500).send({ Error: error });
@@ -68,20 +70,20 @@ const updateCategoryController = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const _id = req.params.blogId;
-    const { name } = req.body;
-
-    const date = moment(Date(date)).format("DD-MMM-YYYY");
+    const { name } = req.params;
+    
+    const updateName = req.body.name;
+    console.log(updateName);
 
     const blog = await updateCategoryByIdHelper({
-      query: { _id },
-      updateBody: { name },
-      options: { new: true, upsert: true },
+      query: { name },
+      updateBody: { name:updateName },
+      options: { new: true },
     });
 
     return res
       .status(201)
-      .send({ Message: "Update Category Successfully!", blog });
+      .redirect('/categories')
   } catch (error) {
     return res.status(500).send({ Error: error });
   }

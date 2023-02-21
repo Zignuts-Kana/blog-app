@@ -3,7 +3,7 @@ import { BlogData } from "../models/blog.model.js";
 const createNewBlogHelper = async (data) => {
   try {
     return await BlogData.findOneAndUpdate(
-      { title: data.title, slug: data.slug },
+      { title: data.title },
       data,
       {
         upsert: true,

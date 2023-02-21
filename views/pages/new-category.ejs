@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="card-body">
-              <form id="formCategory">
+              <form action="category" method="post" id="formCategory">
                 <h6 class="heading-small text-muted mb-4">
                   Category Information
                 </h6>
@@ -72,7 +72,7 @@
                           class="form-control form-control-alternative"
                           name="name"
                           placeholder="Category Name"
-                          value="<%= locals.userInfo && locals.userInfo.name %>"
+                          required
                         />
                         <% if (locals.messages && messages.errors &&
                         messages.errors.name) { %>
@@ -102,31 +102,32 @@
 
   <!-- Include scripts -->
   <% include ../partials/scripts %>
-  <script>
+  <!-- <script>
     console.log('category');
     const formCategory = document.querySelector('#formCategory');
     formCategory.addEventListener('submit',(e)=>{
       e.preventDefault();
 
       const name = document.getElementById('input-name').value;
-
+console.log(JSON.stringify({name}));
       const userAction = async () => {
         const response = await fetch(`http://localhost:3000/category`, {
           method: "POST",
           body: JSON.stringify({name}),
           headers: {
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/x-www-form-urlencoded",
+            "enctype":"multipart/form-data"
+          }
         });
 
-        if (response.status === 200) {
-          window.location.href = `http://localhost:3000/`;
+        if (response.status == 201) {
+          window.location.href = `http://localhost:3000/categories`;
         } else {
-          window.location.href = `http://localhost:3000/category`;
+          window.location.href = `http://localhost:3000/new-category`;
         }
       };
 
       userAction();
     })
-  </script>
+  </script> -->
 </body>

@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
-import slug from "mongoose-slug-generator";
 
 const { Mixed,ObjectId, Number, String } = mongoose.Schema.Types;
-
-mongoose.plugin(slug);
 
 const BlogDataSchema = mongoose.Schema(
   {
@@ -20,9 +17,6 @@ const BlogDataSchema = mongoose.Schema(
     },
     slug: {
       type: String,
-      require: true,
-      unique: true,
-      slug: "title",
     },
     category: {
       type: String,

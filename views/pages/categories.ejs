@@ -21,12 +21,12 @@
                 <thead class="thead-light">
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Date</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% for (let i =0;i<2;i++){ %>
+                  <% for (let i =0;i<categoryList.length;i++){ %>
                   <tr>
                     <th scope="row">
                       <div class="media align-items-center">
@@ -34,12 +34,13 @@
                           <img alt="Image placeholder" src="/uploads/<%- %>">
                         </a> -->
                         <div class="media-body">
-                          <span class="mb-0 text-sm"><%= result[i].name %></span>
+                          <span class="mb-0 text-sm"><%= categoryList[i].name %></span>
                         </div>
                       </div>
                     </th>
                     <td>
-                      <div class="d-flex align-items-center">
+                      <%= categoryList[i].date %>
+                      <!-- <div class="d-flex align-items-center">
                         <span class="mr-2">60%</span>
                         <div>
                           <div class="progress">
@@ -53,7 +54,7 @@
                             ></div>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
                     </td>
                     <td>
                       <ul class="list-inline m-0">
@@ -62,7 +63,7 @@
                             class="btn btn-success btn-sm rounded-0"
                             type="button"
                             title="Edit"
-                            name=`edit-<%= results[i].slug %>`
+                            name="edit/<%= categoryList[i].name %>"
                             onclick="editClicked(this.name)"><i
                             class="fa fa-edit"
                             ></i>
@@ -73,7 +74,7 @@
                             class="btn btn-danger btn-sm rounded-0"
                             type="button"
                             title="Delete"
-                            name=`delete-<%= results[i]._id %>`
+                            name=delete/<%= categoryList[i]._id %>
                             onclick="deleteClicked(this.name)"><i
                             class="fa fa-trash"
                             ></i>
@@ -125,17 +126,17 @@
   <% include ../partials/scripts %>
   <script>
     const editClicked = (editName) => {
-      let slug = editName.split("-");
-      slug = parseInt(slug[1]);
+      let name = editName.split("/");
+      name = name[1];
 
-      window.location.href = `http://localhost:3000/category/edit/${slug}`;
+      window.location.href = `http://localhost:3000/?categories=${name}`;
     };
 
     const deleteClicked = (deleteName) => {
       let isExecuted = confirm(`Are you sure to delete this category?`);
 
-      let deleteIndex = deleteName.split("-");
-      deleteIndex = parseInt(deleteIndex[1]);
+      let deleteIndex = deleteName.split("/");
+      deleteIndex = deleteIndex[1];
 
       const userAction = async () => {
         await fetch(`http://localhost:3000/category/delete/${deleteIndex}`, {
@@ -145,9 +146,7 @@
           },
         });
 
-        setTimeout(() => {
-          window.location.href = `http://localhost:3000/blogs`;
-        }, 1500);
+          window.location.href = `http://localhost:3000/categories`;
       };
 
       if (isExecuted === true) {
