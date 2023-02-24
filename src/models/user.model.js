@@ -26,7 +26,7 @@ const BlogUserSchema = mongoose.Schema(
     },role:{
       type:String,
       enum:['Admin','Guest','User'],
-      default:'Guest'
+      default:'User'
     }
   },
   {

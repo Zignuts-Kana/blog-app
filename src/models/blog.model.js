@@ -12,7 +12,7 @@ const BlogDataSchema = mongoose.Schema(
     },
     owner: {
       type: ObjectId,
-      ref: "blog-user",
+      ref: "blog-users",
       require:true,
     },
     slug: {

@@ -33,6 +33,7 @@ const findBlogByIdHelper = async (_id) => {
 
 const findOneBlogByFieldHelper = async (query) => {
   try {
+    console.log(query);
     return await BlogData.findOne(query);
   } catch (error) {
     console.log("Error in User Helper in findOneBlogByFieldHelper", error);

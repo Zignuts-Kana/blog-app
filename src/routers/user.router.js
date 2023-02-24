@@ -13,9 +13,9 @@ import { userAuthMiddleware } from "../middlewares/auth.middleware.js";
 //user validatore
 const userRouter = Router();
 
-userRouter.post("/singUp", createUserValidator, singUpUserController);
+userRouter.post("/singUp",createUserValidator, singUpUserController);
 
-userRouter.post("/logIn", loginUserValidator, logInUserController);
+userRouter.post("/logIn",loginUserValidator, logInUserController);
 
 userRouter.get("/logOut", userAuthMiddleware, logoutUserController);
 

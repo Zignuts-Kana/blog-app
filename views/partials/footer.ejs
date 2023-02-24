@@ -47,18 +47,18 @@
     }
   }
 
-  function logout(event) {
-    if (!event.target.className.includes('logout')) {
-      return;
-    }
+  // function logout(event) {
+  //   if (!event.target.className.includes('logout')) {
+  //     return;
+  //   }
 
-    var xhr = new XMLHttpRequest();
+  //   var xhr = new XMLHttpRequest();
 
-    xhr.addEventListener("load", redirectToLogin);
-    xhr.open("POST", "/logout");
-    xhr.send();
-  }
+  //   xhr.addEventListener("load", redirectToLogin);
+  //   xhr.open("POST", "/logout");
+  //   xhr.send();
+  // }
 
-  var bodyElement = document.querySelector('body');
-  addEvent('click', bodyElement, logout);
+  // var bodyElement = document.querySelector('body');
+  // addEvent('click', bodyElement, logout);
 </script>

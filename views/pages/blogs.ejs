@@ -96,6 +96,11 @@
   <!-- Include scripts -->
   <% include ../partials/scripts %>
   <script>
+
+$(document).ready(function () {
+    $('#example').DataTable();
+});
+
     const editClicked = (editName) => {
         
         let slug = editName.split('/');

@@ -17,7 +17,7 @@ const BlogCategorySchema = mongoose.Schema(
     owner: {
       type: ObjectId,
       require: true,
-      ref: "blog-user",
+      ref: "blog-users",
     },
   },
   {

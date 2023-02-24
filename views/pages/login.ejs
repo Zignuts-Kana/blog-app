@@ -8,14 +8,14 @@
     <div class="container mt--8 pb-5">
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7">
-          <div class="card bg-secondary shadow border-0">
-            
+          <div class="card bg-secondary shadow border-0">    
             <div class="card-body px-lg-5 py-lg-5">
               <div class="text-center text-muted mb-4">
                 <small>Sign in with credentials</small>
+                <hr>
                 <br />
                 <small>
-                  You can use <strong>admin@test.com</strong> and <strong>admin@test</strong> to login
+                  You can use <strong>admin@zignuts.com</strong> and <strong>admin@zignuts</strong> to login
                 </small>
               </div>
               <% if (locals.messages && messages.success) { %>
@@ -23,7 +23,7 @@
                   <small class="text-success font-weight-700"><%= messages.success %></small>
                 </div>
               <% } %>
-              <form role="form" action="/login" method="POST">
+              <form id="loginForm" action="logIn" method="post">
                 <% if (locals.messages && messages.errors && messages.errors.databaseError) { %>
                   <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <%= messages.errors.databaseError %>
@@ -37,7 +37,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" name="username">
+                    <input class="form-control" placeholder="Email" type="email" name="email" id="email">
                   </div>
                   <% if (locals.messages && messages.errors) { %>
                     <% Object.keys(messages.errors).filter(function(key) { return ['username', 'invalidEmailOrPassword', 'internalServerError'].includes(key); }).map(function(key) { %>
@@ -52,7 +52,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" name="password">
+                    <input class="form-control" placeholder="Password" type="password" name="password" id="password">
                   </div>
                   <% if (locals.messages && messages.errors && messages.errors.password) { %>
                     <strong class="invalid-feedback" style="display: block">

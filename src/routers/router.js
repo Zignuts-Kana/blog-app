@@ -6,9 +6,12 @@ import {
   findAllCategoryHelper,
   findAllCategoryAllFieldHelper,
   findCategoryByFieldHelper,
-  findOneCategoryByFieldHelper
+  findOneCategoryByFieldHelper,
 } from "../helpers/category.helper.js";
-import { findAllBlogHelper } from "../helpers/blog.helper.js";
+import {
+  findAllBlogHelper,
+  findOneBlogByFieldHelper,
+} from "../helpers/blog.helper.js";
 import { findBlogBySlug } from "../controllers/blog.controller.js";
 
 const Router = express.Router();
@@ -17,13 +20,31 @@ Router.get("/", async (req, res) => {
   try {
     if (req.query && req.query.categories) {
       let category = req.query.categories;
-      category = await findOneCategoryByFieldHelper({name:category});
+      category = await findOneCategoryByFieldHelper({ name: category });
       console.log(category);
-      return res.render('pages/update-category.ejs',{category});
+      return res.render("pages/update-category.ejs", { category });
     }
-    return res.render("pages/dashboard.ejs");
+    if (req.query && req.query.slug) {
+      const blog = await findOneBlogByFieldHelper({ slug:req.query.slug });
+      console.log(blog);
+      return res.render("pages/blog-view.ejs", { blog });
+    }
+    if (req.query && req.query.blog) {
+      const blogs = await findAllBlogHelper();
+      let letestBlog = blogs.slice(0, 1);
+      letestBlog[0].description = letestBlog[0].description.slice(0, 200);
+      let otherBlogs = blogs.slice(1);
+      otherBlogs.forEach((blog, index) => {
+        otherBlogs[index].description = blog.description.slice(0, 100);
+      });
+      const categoryList = await findAllCategoryHelper();
+      console.log(categoryList);
+      return res.render("pages/blog-page.ejs", { letestBlog, otherBlogs,categoryList });
+    }
+    return res.render("pages/dashboard.ejs",{user:undefined,token:undefined});
+    // return res.render("pages/dashboard.ejs");
   } catch (error) {
-    return res.status(500).send({Error:error})
+    return res.status(500).send({ Error: error });
   }
 });
 
@@ -66,6 +87,7 @@ Router.get("/register", (req, res) => {
 });
 
 Router.get("/login", (req, res) => {
+  console.log("here");
   return res.render("pages/login.ejs");
 });
 
@@ -73,19 +95,31 @@ Router.get("/forgot-password", (req, res) => {
   return res.render("pages/reset-password.ejs");
 });
 
-Router.get("/blog", (req, res) => {
-  return res.render("pages/blog-page.ejs");
+Router.get("/blog", async (req, res) => {
+  const blogs = await findAllBlogHelper();
+  let letestBlog = blogs.slice(0, 1);
+  letestBlog[0].description = letestBlog[0].description.slice(0, 200);
+  let otherBlogs = blogs.slice(1);
+  otherBlogs.forEach((blog, index) => {
+    otherBlogs[index].description = blog.description.slice(0, 100);
+  });
+  return res.render("pages/blog-page.ejs", { letestBlog, otherBlogs });
 });
 
 Router.get("/profile", (req, res) => {
+  // singUpUserController;
+
   return res.render("pages/profile.ejs");
 });
 
 Router.get("/:slug", async (req, res) => {
   try {
-    const blog = await findBlogBySlug(req, res);
-    const categoryList = await findAllCategoryHelper();
-    return res.render("pages/update-blog.ejs", { blog, categoryList });
+    if (req.params && req.params.slug && req.params.slug.includes("-")) {
+      const blog = await findBlogBySlug(req, res);
+      const categoryList = await findAllCategoryHelper();
+      return res.render("pages/update-blog.ejs", { blog, categoryList });
+    }
+    return res.render("pages/dashboard.ejs",{user:undefined,token:undefined});
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
@@ -101,7 +135,7 @@ Router.get("categories/:category", async (req, res) => {
   }
 });
 
-Router.use("/user", userRouter);
+Router.use("/", userRouter);
 
 Router.use("/blogs", blogRouter);
 
