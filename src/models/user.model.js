@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const { Number, String } = mongoose.Schema.Types;
+const { Mixed,Number, String } = mongoose.Schema.Types;
 
 const BlogUserSchema = mongoose.Schema(
   {
@@ -25,9 +25,11 @@ const BlogUserSchema = mongoose.Schema(
       type:String,
     },role:{
       type:String,
-      enum:['Admin','Guest','User'],
+      enum:['Admin','User'],
       default:'User'
-    }
+    },profileImage: {
+      type: Mixed,
+    },
   },
   {
     timestamps: true,

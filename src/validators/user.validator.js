@@ -1,14 +1,18 @@
 import { body } from "express-validator";
 
 const createUserValidator = [
-    body('name').notEmpty(),
-    body('email').notEmpty().isEmail(),
-    body('password').notEmpty().isLength({min:8}),
+    body('name').notEmpty().trim(),
+    body('email').notEmpty().isEmail().trim(),
+    body('password').notEmpty().trim().isLength({min:8}),
 ]
 
 const loginUserValidator =  [
-    body('email').notEmpty().isEmail(),
-    body('password').notEmpty().isLength({min:8}),
+    body('email').notEmpty().isEmail().trim(),
+    body('password').notEmpty().trim().isLength({min:8}),
 ]
 
-export {createUserValidator,loginUserValidator}
+const userUpdateValidator = [
+
+]
+
+export {createUserValidator,loginUserValidator,userUpdateValidator}

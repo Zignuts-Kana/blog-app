@@ -6,12 +6,14 @@ import {
   findAllBlogsOfOneUserController,
   deleteBlogController,
   updateBlogController,
-  findBlogBySlug
+  findBlogBySlug,
+  searchBlogController
 } from "../controllers/blog.controller.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from 'url';
-import { createBlogValidator } from "../validators/blog.validator.js";
+import { createBlogValidator, updateBlogValidator } from "../validators/blog.validator.js";
+import { userAuthMiddleware } from "../middlewares/auth.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,12 +22,12 @@ const blogRouter = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    fs.mkdir('./public/uploads/',(err)=>{
+    fs.mkdir('./public/uploads/', (err) => {
       cb(null, './public/uploads/');
-   });
+    });
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname);
+    cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname.replaceAll(' ','-'));
   },
 });
 
@@ -42,31 +44,18 @@ const upload = multer({
   fileFilter,
 });
 
-// upload.single('imageThumbnail'),
-// upload.array('images'),
-
 blogRouter.post(
-  "/",
-  upload.fields([{name:"imageThumbnail",maxCount:1},{name:"images",maxCount:5}]),
+  "/", userAuthMiddleware,
+  upload.fields([{ name: "imageThumbnail", maxCount: 1 }, { name: "images", maxCount: 5 }]),
   createBlogController
 );
 
-blogRouter.get('/:slug',findBlogBySlug);
+blogRouter.get('/:slug', findBlogBySlug);
 
-blogRouter.delete('/delete/:blogId',deleteBlogController);
+blogRouter.delete('/delete/:blogId', userAuthMiddleware, deleteBlogController);
 
-blogRouter.post('/edit/:slug',updateBlogController);
+blogRouter.post('/edit/:slug', userAuthMiddleware, upload.fields([{ name: "imageThumbnail", maxCount: 1 }, { name: "images", maxCount: 5 }]), updateBlogController);
 
-// blogRouter.post(
-//   '/thumbnail',upload.single('imageThumbnail'),
-//   storeThumbnail
-// )
-
-// blogRouter.post(
-//   '/images',upload.array('images'),
-//   storeImages
-// )
-
-// blogRouter.get('/',)
+blogRouter.get('/search',searchBlogController);
 
 export { blogRouter };

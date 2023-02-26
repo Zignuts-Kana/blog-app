@@ -11,7 +11,6 @@
 <script src="js/argon.min.js?v=1.0.0"></script>
 <script>
   let data = localStorage.getItem("user");
-  console.log(data);
   if (data !== null) {
     // window.location.href = 'http://localhost:3000/'
     data = JSON.parse(data);
@@ -22,7 +21,7 @@
     const html = `<a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                <img alt="Image placeholder" src="img/theme/team-4-800x800.jpg">
+                <img alt="Image placeholder" src=${data.profileImage ? `uploads/${data.profileImage}` : "img/theme/team-4-800x800.jpg"}>
               </span>
               <div class="media-body ml-2 d-none d-lg-block">
                 <span class="mb-0 text-sm font-weight-bold" id="userName">${data.name}</span>
@@ -30,38 +29,70 @@
             </div>
           </a>
           <% include ./dropdown %>`;
-    dropDownManul.innerHTML = html;
+    if (dropDownManul) {
+      dropDownManul.innerHTML = html;
+    }
 
     if (data.role === "User") {
       const newBlogLink = document.getElementById("newBlogLink");
-      newBlogLink.style.display = "none";
+      if (newBlogLink) {
+        newBlogLink.style.display = "none";
+      }
 
       const newCategory = document.getElementById("newCategory");
-      newCategory.style.display = "none";
+      if (newCategory) {
+        newCategory.style.display = "none";
+      }
     }
   } else {
     const blogLink = document.getElementById("blogLink");
-    blogLink.style.pointerEvents = "none";
+    if (blogLink) {
+      blogLink.style.pointerEvents = "none";
+    }
 
     const newBlogLink = document.getElementById("newBlogLink");
-    newBlogLink.style.pointerEvents = "none";
+    if (newBlogLink) {
+      newBlogLink.style.pointerEvents = "none";
+    }
 
     const category = document.getElementById("category");
-    category.style.pointerEvents = "none";
+    if (category) {
+      category.style.pointerEvents = "none";
+    }
 
     const newCategory = document.getElementById("newCategory");
-    newCategory.style.pointerEvents = "none";
+    if (newCategory) {
+      newCategory.style.pointerEvents = "none";
+    }
 
     const logoutLink = document.getElementById("logoutLink");
-    logoutLink.style.pointerEvents = "none";
+    if (logoutLink) {
+      logoutLink.style.pointerEvents = "none";
+    }
   }
 
   const logoutLink = document.getElementById("logoutLink");
-  console.log(logoutLink);
-  logoutLink.addEventListener("click", logoutClicked);
+
+  const dropdownLogout = document.getElementById('dropdownLogout');
+  if (logoutLink && dropdownLogout) {
     function logoutClicked() {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      return window.location.href = "http://localhost:3000/";
+      let isExecuted = confirm(`Are you sure about Logout?`);
+      if (isExecuted) {
+        const userAction = async () => {
+          const response = await fetch(`http://localhost:3000/user/logOut`, {
+            method: "DELETE",
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+          });
+        };
+
+        userAction();
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        return window.location.href = "http://localhost:3000/";
+      }
+      return false;
     };
+  }
 </script>

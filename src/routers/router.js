@@ -25,23 +25,32 @@ Router.get("/", async (req, res) => {
       return res.render("pages/update-category.ejs", { category });
     }
     if (req.query && req.query.slug) {
-      const blog = await findOneBlogByFieldHelper({ slug:req.query.slug });
+      const blog = await findOneBlogByFieldHelper({ slug: req.query.slug });
       console.log(blog);
       return res.render("pages/blog-view.ejs", { blog });
     }
     if (req.query && req.query.blog) {
       const blogs = await findAllBlogHelper();
-      let letestBlog = blogs.slice(0, 1);
-      letestBlog[0].description = letestBlog[0].description.slice(0, 200);
-      let otherBlogs = blogs.slice(1);
-      otherBlogs.forEach((blog, index) => {
-        otherBlogs[index].description = blog.description.slice(0, 100);
-      });
+      console.log(blogs.length);
+      let otherBlogs;
+      if (blogs.length !== 1) {
+        otherBlogs = blogs && blogs.length ? blogs.slice(1) : [];
+        if (otherBlogs.length) {
+          otherBlogs.forEach((blog, index) => {
+            otherBlogs[index].description = blog.description.slice(0, 100);
+          });
+        }
+      }
+
+      let latestBlog = blogs && blogs.length ? blogs.slice(0, 1) : [];
+      if (latestBlog.length) {
+        latestBlog[0].description = latestBlog[0].description.slice(0, 200);
+      }
+
       const categoryList = await findAllCategoryHelper();
-      console.log(categoryList);
-      return res.render("pages/blog-page.ejs", { letestBlog, otherBlogs,categoryList });
+      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog, otherBlogs:otherBlogs?otherBlogs:[], categoryList });
     }
-    return res.render("pages/dashboard.ejs",{user:undefined,token:undefined});
+    return res.render("pages/dashboard.ejs", { user: undefined, token: undefined });
     // return res.render("pages/dashboard.ejs");
   } catch (error) {
     return res.status(500).send({ Error: error });
@@ -87,7 +96,6 @@ Router.get("/register", (req, res) => {
 });
 
 Router.get("/login", (req, res) => {
-  console.log("here");
   return res.render("pages/login.ejs");
 });
 
@@ -97,18 +105,27 @@ Router.get("/forgot-password", (req, res) => {
 
 Router.get("/blog", async (req, res) => {
   const blogs = await findAllBlogHelper();
-  let letestBlog = blogs.slice(0, 1);
-  letestBlog[0].description = letestBlog[0].description.slice(0, 200);
-  let otherBlogs = blogs.slice(1);
-  otherBlogs.forEach((blog, index) => {
-    otherBlogs[index].description = blog.description.slice(0, 100);
-  });
-  return res.render("pages/blog-page.ejs", { letestBlog, otherBlogs });
+      console.log(blogs.length);
+      let otherBlogs;
+      if (blogs.length !== 1) {
+        otherBlogs = blogs && blogs.length ? blogs.slice(1) : [];
+        if (otherBlogs.length) {
+          otherBlogs.forEach((blog, index) => {
+            otherBlogs[index].description = blog.description.slice(0, 100);
+          });
+        }
+      }
+
+      let latestBlog = blogs && blogs.length ? blogs.slice(0, 1) : [];
+      if (latestBlog.length) {
+        latestBlog[0].description = latestBlog[0].description.slice(0, 200);
+      }
+
+      const categoryList = await findAllCategoryHelper();
+      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog, otherBlogs:otherBlogs?otherBlogs:[], categoryList });
 });
 
 Router.get("/profile", (req, res) => {
-  // singUpUserController;
-
   return res.render("pages/profile.ejs");
 });
 
@@ -119,7 +136,7 @@ Router.get("/:slug", async (req, res) => {
       const categoryList = await findAllCategoryHelper();
       return res.render("pages/update-blog.ejs", { blog, categoryList });
     }
-    return res.render("pages/dashboard.ejs",{user:undefined,token:undefined});
+    return res.render("pages/dashboard.ejs", { user: undefined, token: undefined });
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
@@ -137,7 +154,7 @@ Router.get("categories/:category", async (req, res) => {
 
 Router.use("/", userRouter);
 
-Router.use("/blogs", blogRouter);
+Router.use("/journal", blogRouter);
 
 Router.use("/category", categoryRouter);
 

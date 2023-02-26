@@ -14,6 +14,7 @@ const userAuthMiddleware = async (req, res, next) => {
   const token = req.headers["authorization"]
     ? req.headers["authorization"].replace("Bearer ", "")
     : undefined;
+    console.log(token);
   if (!token) {
     return res.status(400).send({ message: "Token is Needed!" });
   }

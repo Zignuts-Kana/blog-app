@@ -298,14 +298,20 @@
   <script>
     <% if (typeof user != 'undefined') { %>
        localStorage.setItem('token','<%= token %>');
+       let profileImage
+       <% if(typeof user.profileImage != 'undefined'){%>
+         profileImage='<%= user.profileImage %>'
+       <%}%>
        const user = {
         _id:"<%= user._id %>",
         name:'<%= user.name %>',
         role:'<%= user.role %>',
         email:'<%= user.email %>',
-        token:'<%= user.token %>'
+        token:'<%= user.token %>',
+        profileImage:profileImage?profileImage:undefined
        };
        localStorage.setItem('user',JSON.stringify(user));
+       window.location.href = `http://localhost:3000/`
     <% } %>
 
   </script>
