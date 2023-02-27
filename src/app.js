@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static('../uploads'));
 
 //Set Morgan
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 //Define BodyParser Middleware
 // app.use(bodyParser.json());

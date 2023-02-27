@@ -41,8 +41,7 @@ const findOneBlogByFieldHelper = async (query) => {
 
 const searchBlogByParams = async (params) =>{
   try {
-    const regexParams = new RegExp(`*.${params}.*`,'i');
-    return await BlogData.find({title:{$regex: regexParams},category:{$regex : regexParams}}).sort({createdAt:-1}).limit(10);
+    return await BlogData.find({$or:[{title:{$regex: params, $options:"i"}},{category:{$regex: params, $options:"i"}}]}).sort({createdAt:-1}).limit(10);
   } catch (error) {
     console.log("Error in User Helper in searchBlogByParams", error);
   }

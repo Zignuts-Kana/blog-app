@@ -48,7 +48,7 @@ Router.get("/", async (req, res) => {
       }
 
       const categoryList = await findAllCategoryHelper();
-      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog, otherBlogs:otherBlogs?otherBlogs:[], categoryList });
+      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog,searchedBlogs:[], otherBlogs:otherBlogs?otherBlogs:[], categoryList });
     }
     return res.render("pages/dashboard.ejs", { user: undefined, token: undefined });
     // return res.render("pages/dashboard.ejs");
@@ -105,7 +105,6 @@ Router.get("/forgot-password", (req, res) => {
 
 Router.get("/blog", async (req, res) => {
   const blogs = await findAllBlogHelper();
-      console.log(blogs.length);
       let otherBlogs;
       if (blogs.length !== 1) {
         otherBlogs = blogs && blogs.length ? blogs.slice(1) : [];
@@ -122,7 +121,7 @@ Router.get("/blog", async (req, res) => {
       }
 
       const categoryList = await findAllCategoryHelper();
-      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog, otherBlogs:otherBlogs?otherBlogs:[], categoryList });
+      return res.render("pages/blog-page.ejs", { letestBlog: latestBlog,searchedBlogs:[], otherBlogs:otherBlogs?otherBlogs:[], categoryList });
 });
 
 Router.get("/profile", (req, res) => {

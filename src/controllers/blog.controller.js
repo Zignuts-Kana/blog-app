@@ -132,10 +132,20 @@ const updateBlogController = async (req, res) => {
 
 const searchBlogController = async (req,res) =>{
   try {
-    const {search} = req.query;
-    console.log("search",search);
-    const blogs = await searchBlogByParams(search);
-    return res.status(200).send({blogs});
+    const {search} = req.params;
+    const searchBlogs = await searchBlogByParams(search);
+    if (searchBlogs.length) {
+      searchBlogs.forEach((blog,index) => {
+        searchBlogs[index].description = blog.description.slice(0,100);
+      });
+    }
+    const blogs = await findAllBlogHelper();
+      let latestBlog = blogs && blogs.length ? blogs.slice(0, 1) : [];
+      if (latestBlog.length) {
+        latestBlog[0].description = latestBlog[0].description.slice(0, 200);
+      }
+      const categoryList = await findAllCategoryHelper();
+    return res.status(200).render('pages/blog-page.ejs',{searchedBlogs:searchBlogs,letestBlog:latestBlog,categoryList ,otherBlogs:[]});
   } catch (error) {
     return res.status(500).send({Error:error});
   }

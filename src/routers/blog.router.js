@@ -56,6 +56,6 @@ blogRouter.delete('/delete/:blogId', userAuthMiddleware, deleteBlogController);
 
 blogRouter.post('/edit/:slug', userAuthMiddleware, upload.fields([{ name: "imageThumbnail", maxCount: 1 }, { name: "images", maxCount: 5 }]), updateBlogController);
 
-blogRouter.get('/search',searchBlogController);
+blogRouter.get('/search/:search',userAuthMiddleware,searchBlogController);
 
 export { blogRouter };
