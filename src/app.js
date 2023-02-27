@@ -24,7 +24,6 @@ app.use(expressLayouts);
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, '../public')));
-console.log(path.join(__dirname, '../uploads'));
 app.use('/uploads', express.static('../uploads'));
 
 //Set Morgan
@@ -44,7 +43,7 @@ connect
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
-  return res.status(404).render('pages/404');
+  return res.status(404).render('pages/404.ejs');
 });
 
 //Listen Server On Port

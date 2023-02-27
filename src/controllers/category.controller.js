@@ -15,19 +15,20 @@ const createCategoryController = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.log(errors.array());
+      return res.status(400).send({ errors: errors.array() });
     }
     const { name } = req.body;
     
-    const date = moment(Date.now()).tz("Asia/Calcutta|Asia/Kolkata").format("DD-MMM-YYYY");
+    const date = moment(Date.now()).tz("Asia/Kolkata").format("DD-MMM-YYYY");
 
     const category = await createNewCategoryHelper({
-      name,date
+      name,date,owner:req.user._id
     });
 
     return res
       .status(201)
-      .redirect('/categories')
+      .send({message:"Create Success..."})
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
@@ -68,22 +69,22 @@ const updateCategoryController = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.log(errors.array());
+      return res.status(400).send({ errors: errors.array() });
     }
     const { name } = req.params;
     
     const updateName = req.body.name;
-    console.log(updateName);
 
     const blog = await updateCategoryByIdHelper({
       query: { name },
-      updateBody: { name:updateName },
+      updateBody: { name:updateName , owner:req.user._id },
       options: { new: true },
     });
 
     return res
-      .status(201)
-      .redirect('/categories')
+      .status(200)
+      .send({message:"Update category success..."})
   } catch (error) {
     return res.status(500).send({ Error: error });
   }

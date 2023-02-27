@@ -1,141 +1,143 @@
 <body>
   <!-- Sidenav -->
   <% include ../partials/sidebar %>
-  <!-- Main content -->
-  <div class="main-content">
-    <!-- Top navbar -->
-    <% include ../partials/navbar %>
-    <!-- Header -->
-    <% include ../partials/header %>
-    <!-- Page content -->
-    <div class="container-fluid mt--7">
-      <!-- Table -->
-      <div class="row">
-        <div class="col">
-          <div class="card shadow">
-            <div class="card-header border-0">
-              <h3 class="mb-0">Blogs</h3>
-            </div>
-            <div class="table-responsive">
-              <table class="table align-items-center table-flush">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(let i = 0;i< blogs.length;i++){ %>
-                  <tr>
-                    <th scope="row">
-                      <div class="media align-items-center">
-                        <a href="#" class="avatar rounded-circle mr-3">
-                          <img alt="Blog Image" src="uploads/<%= blogs[i].imageThumbnail[0].filename %>">
-                        </a>
-                        <div class="media-body">
-                          <span class="mb-0 text-sm"><%= blogs[i].title %></span>
-                        </div>
-                      </div>
-                    </th>
-                    <td><%= blogs[i].category %></td>
-                    <td>
-                      <%- blogs[i].description %>...
-                    </td>
-                    <td>
-                      <ul class="list-inline m-0">
-                        <li class="list-inline-item">
-                          <button class="btn btn-success btn-sm rounded-0" type="button" title="Edit" name=edit/<%= blogs[i].slug %> onclick="editClicked(this.name)"><i class="fa fa-edit"></i></button>  
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Top navbar -->
+      <% include ../partials/navbar %>
+        <!-- Header -->
+        <% include ../partials/header %>
+          <!-- Page content -->
+          <div class="container-fluid mt--7">
+            <!-- Table -->
+            <div class="row">
+              <div class="col">
+                <div class="card shadow">
+                  <div class="card-header border-0">
+                    <h3 class="mb-0">Blogs</h3>
+                  </div>
+                  <div class="table-responsive">
+                    <table id="example" class="table align-items-center table-flush">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Category</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% for(let i=0;i< blogs.length;i++){ %>
+                          <tr>
+                            <th scope="row">
+                              <div class="media align-items-center">
+                                <a href="/?slug=<%- blogs[i].slug %>" class="avatar rounded-circle mr-3">
+                                  <img alt="Blog Image" src="uploads/<%= blogs[i].imageThumbnail[0].filename %>">
+                                </a>
+                                <div class="media-body">
+                                  <span class="mb-0 text-sm">
+                                    <%= blogs[i].title %>
+                                  </span>
+                                </div>
+                              </div>
+                            </th>
+                            <td>
+                              <%= blogs[i].category %>
+                            </td>
+                            <td>
+                              <%- blogs[i].description %>...
+                            </td>
+                            <td>
+                              <ul class="list-inline m-0">
+                                <li class="list-inline-item">
+                                  <button class="btn btn-success btn-sm rounded-0" type="button" title="Edit"
+                                    name=edit/<%=blogs[i].slug %> onclick="editClicked(this.name)"><i
+                                      class="fa fa-edit"></i></button>
+                                </li>
+                                <li class="list-inline-item">
+                                  <button class="btn btn-danger btn-sm rounded-0" type="button" title="Delete"
+                                    name=delete/<%=blogs[i]._id%> onclick="deleteClicked(this.name)"><i
+                                      class="fa fa-trash"></i></button>
+                                </li>
+                              </ul>
+                            </td>
+                          </tr>
+                          <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="card-footer py-4">
+                    <nav aria-label="...">
+                      <ul class="pagination justify-content-end mb-0">
+                        <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1">
+                            <i class="fas fa-angle-left"></i>
+                            <span class="sr-only">Previous</span>
+                          </a>
                         </li>
-                        <li class="list-inline-item">
-                          <button class="btn btn-danger btn-sm rounded-0" type="button" title="Delete" name=delete/<%= blogs[i]._id%> onclick="deleteClicked(this.name)"><i class="fa fa-trash"></i></button>
+                        <li class="page-item active">
+                          <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">
+                            <i class="fas fa-angle-right"></i>
+                            <span class="sr-only">Next</span>
+                          </a>
                         </li>
                       </ul>
-                    </td>
-                  </tr>
-                <% } %>
-                </tbody>
-              </table>
+                    </nav>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="card-footer py-4">
-              <nav aria-label="...">
-                <ul class="pagination justify-content-end mb-0">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">
-                      <i class="fas fa-angle-left"></i>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#"
-                      >2 <span class="sr-only">(current)</span></a
-                    >
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">
-                      <i class="fas fa-angle-right"></i>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+            <!-- Footer -->
+            <% include ../partials/footer %>
           </div>
-        </div>
-      </div>
-      <!-- Footer -->
-      <% include ../partials/footer %>
     </div>
-  </div>
 
-  <!-- Include scripts -->
-  <% include ../partials/scripts %>
-  <script>
+    <!-- Include scripts -->
+    <% include ../partials/scripts %>
+      <script>
 
-$(document).ready(function () {
-    $('#example').DataTable();
-});
-
-    const editClicked = (editName) => {
-        
-        let slug = editName.split('/');
-        slug = slug[1];
-        
-        window.location.href = `http://localhost:3000/${slug}`;   
-      }
-
-      const deleteClicked = (deleteName) => {
-
-        let isExecuted = confirm(`Are you sure to delete this blog?`);
-
-        let blogId = deleteName.split('/');
-        blogId =blogId[1];
-        // console.log(deleteIndex);
-        // const myBody = {};
-
-        const userAction = async () => {
-        await fetch(`http://localhost:3000/blogs/${blogId}`, {
-          method: 'DELETE',
-          // body: JSON.stringify(myBody),
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        $(document).ready(function () {
+          $('#example').DataTable({
+            pageLength : 5,
+          });
         });
 
-          //false wrong when delete row and page is empty!
-          window.location.href = `http://localhost:3000/blogs`
-          // location.reload();
+        const editClicked = (editName) => {
 
+          let slug = editName.split('/');
+          slug = slug[1];
+
+          window.location.href = `http://localhost:3000/${slug}`;
         }
 
-        if (isExecuted === true) {
-          userAction();
+        const deleteClicked = (deleteName) => {
+
+          let isExecuted = confirm(`Are you sure to delete this blog?`);
+
+          let blogId = deleteName.split('/');
+          blogId = blogId[1];
+
+          const userAction = async () => {
+            await fetch(`http://localhost:3000/journal/delete/${blogId}`, {
+              method: 'DELETE',
+              headers: {
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+              }
+            });
+
+            window.location.href = `http://localhost:3000/blogs`
+          }
+
+          if (isExecuted === true) {
+            userAction();
+          }
         }
-      }
-  </script>
+      </script>
 </body>

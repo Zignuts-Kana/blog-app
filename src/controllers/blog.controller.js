@@ -6,6 +6,7 @@ import {
   updateBlogByIdHelper,
   findBlogByFieldHelper,
   deleteBlogByIdHelper,
+  searchBlogByParams,
 } from "../helpers/blog.helper.js";
 import { validationResult } from "express-validator";
 import { findAllCategoryHelper } from "../helpers/category.helper.js";
@@ -14,14 +15,20 @@ import moment from "moment";
 
 const createBlogController = async (req, res) => {
   try {
-    const { title, editor1, slug, date, category } = req.body;
-    const {imageThumbnail, images} = req.files
- 
-    const stringDate = moment(Date(date)).format("DD-MMM-YYYY");
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      return res.status(400).send({ errors: errors.array() });
+    }
+    const { title, description, slug, date, category } = req.body;
+    const { imageThumbnail, images } = req.files
+
+    const stringDate = moment(new Date(date)).format("DD-MMM-YYYY");
     await createNewBlogHelper({
+      owner:req.user._id,
       title,
-      description:editor1,
-      slug:title.trim().toLowerCase().replaceAll(" ","-"),
+      description,
+      slug: title.trim().toLowerCase().replaceAll(" ", "-"),
       date: stringDate,
       category,
       imageThumbnail,
@@ -60,19 +67,19 @@ const findAllSerchedBlogsController = async (req, res) => {
       owner: req.user._id,
       title: { $regex: req.body.serch, $options: "i" },
     });
-    return res.render('',{blogs})
+    return res.render('', { blogs })
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
 };
 
-const findBlogBySlug = async (req,res)=>{
+const findBlogBySlug = async (req, res) => {
   try {
     //parse data for update
-    const {slug} = req.params;
-    return await findOneBlogByFieldHelper({slug});
+    const { slug } = req.params;
+    return await findOneBlogByFieldHelper({ slug });
   } catch (error) {
-    return res.status(500).send({Error:error});
+    return res.status(500).send({ Error: error });
   }
 }
 
@@ -92,18 +99,21 @@ const deleteBlogController = async (req, res) => {
 
 const updateBlogController = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      return res.status(400).send({ errors: errors.array() });
+    }
     const slug = req.params.slug;
-    const { title, description, date, category } =
-    req.body;
-    console.log(title, description, date, category);
-    const { imageThumbnail, images} =req.files;
-    console.log('Here2');
-    const stringDate = moment(Date(date)).format("DD-MMM-YYYY");
+    const { title, description, date, category } = req.body;
+    const { imageThumbnail, images } = req.files;
+    const stringDate = moment(new Date(date)).format("DD-MMM-YYYY");
 
     const blog = await updateBlogByIdHelper({
       query: { slug },
       updateBody: {
         title,
+        owner:req.user._id,
         description,
         slug,
         date: stringDate,
@@ -114,11 +124,22 @@ const updateBlogController = async (req, res) => {
       options: { new: true, upsert: true },
     });
 
-    return res.status(201).send({ Message: "Update Blog Successfully!", blog });
+    return res.status(200).send({ Message: "Update Blog Successfully!", blog });
   } catch (error) {
     return res.status(500).send({ Error: error });
   }
 };
+
+const searchBlogController = async (req,res) =>{
+  try {
+    const {search} = req.query;
+    console.log("search",search);
+    const blogs = await searchBlogByParams(search);
+    return res.status(200).send({blogs});
+  } catch (error) {
+    return res.status(500).send({Error:error});
+  }
+}
 
 export {
   createBlogController,
@@ -127,5 +148,6 @@ export {
   findAllSerchedBlogsController,
   deleteBlogController,
   updateBlogController,
-  findBlogBySlug
+  findBlogBySlug,
+  searchBlogController
 };

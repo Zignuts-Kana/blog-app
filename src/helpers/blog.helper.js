@@ -33,12 +33,20 @@ const findBlogByIdHelper = async (_id) => {
 
 const findOneBlogByFieldHelper = async (query) => {
   try {
-    console.log(query);
     return await BlogData.findOne(query);
   } catch (error) {
     console.log("Error in User Helper in findOneBlogByFieldHelper", error);
   }
 };
+
+const searchBlogByParams = async (params) =>{
+  try {
+    const regexParams = new RegExp(`*.${params}.*`,'i');
+    return await BlogData.find({title:{$regex: regexParams},category:{$regex : regexParams}}).sort({createdAt:-1}).limit(10);
+  } catch (error) {
+    console.log("Error in User Helper in searchBlogByParams", error);
+  }
+}
 
 const findBlogByFieldHelper = async (query) => {
   try {
@@ -72,4 +80,5 @@ export {
   updateBlogByIdHelper,
   deleteBlogByIdHelper,
   findBlogByFieldHelper,
+  searchBlogByParams
 };
